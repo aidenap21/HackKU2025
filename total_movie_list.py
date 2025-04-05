@@ -7,14 +7,14 @@ class TotalMovieList:
         self.users = user_movie_lists
 
         # Combine all user lists
-        movie_set = set()
-        for user in self.users:
-            movie_set.update(set(user.movies))
+        movie_set = set(self.users[0].movies)
+        for user in self.users[1:]:
+            movie_set.intersection_update(set(user.movies))
 
         self.movies = list(movie_set)
         self.movies.sort()
     
-    
+
     # Choose a given number of movies at random
     def reduce_movies(self, count):
         return random.sample(self.movies, count)

@@ -158,20 +158,49 @@ class TrviaQuestions():
                     .execute()
                     )
 
-            response_list = list(response.data)
-            question = random.choice(response_list)
-            question_list.append((
-                question["movie"],
-                question["question"],
-                question["option_1"],
-                question["option_2"],
-                question["option_3"],
-                question["option_4"],
-                question["answer"],
-                question["category"]
-            ))
+            if len(response.data) != 0:
+                response_list = list(response.data)
+                question = random.choice(response_list)
+                question_list.append((
+                    question["movie"],
+                    question["question"],
+                    question["option_1"],
+                    question["option_2"],
+                    question["option_3"],
+                    question["option_4"],
+                    question["answer"],
+                    question["category"]
+                ))
+
+            else:
+                print(f"No output for {movie}")
 
         return question_list
+    
+    def verify_question(self, movie, question, verification):
+        response = (
+            self._supabase.table("Trivia Questions")
+            .select("verified")
+            .eq("movie", movie)
+            .eq("question", question)
+            .execute()
+            )
+        
+        updated_verified = response.data[0]["verified"]
+
+        # Decrease value
+        if verification == 0:
+            updated_verified -= 1
+        else:
+            updated_verified += 1
+
+        response = (
+            self._supabase.table("Trivia Questions")
+            .update({"verified" : updated_verified})
+            .eq("movie", movie)
+            .eq("question", question)
+            .execute()
+        )
 
 
 if __name__ == "__main__":
