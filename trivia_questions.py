@@ -3,8 +3,9 @@ import ast
 import time
 from gemini_key import GEMINI_API_KEY
 import google.generativeai as gemini
+from letterboxdpy import movie as lb_movie
 
-class RetrieveQuestions():
+class TrviaQuestions():
     def __init__(self):
         gemini.configure(api_key=GEMINI_API_KEY)
         self.model=gemini.GenerativeModel("gemini-1.5-flash")
@@ -38,6 +39,7 @@ class RetrieveQuestions():
                         start = None
         return results
 
+
     # Generate questions with Gemini
     def generate_questions(self, movie_title):
         # Check if generation has completed
@@ -48,8 +50,8 @@ class RetrieveQuestions():
         while(not_generated):
             try:
                 response = self.model.generate_content(
-                    f"Generate five multiple choice questions for the movie {movie_title} in the following format, with the categories of 'Plot (0)', 'Cast (1)', 'Crew (2)', 'Cinematography (3)', 'Behind the Scenes (4)':"
-                    f"('Question', 'Option 1', 'Option 2', 'Option 3', 'Option 4', 'Correct Option Reprinted', 'Category Number')"
+                    f"Generate five multiple choice questions for the movie {movie_title} in the following format, with the categories of 'Plot (1)', 'Cast (2)', 'Crew (3)', 'Cinematography (4)', 'Behind the Scenes (5)':"
+                    f"('Question', 'Option 1', 'Option 2', 'Option 3', 'Option 4', 'Correct Option Number', 'Category Number')"
                     f"Do not give any other output"
                     )
                 not_generated = False
@@ -70,16 +72,47 @@ class RetrieveQuestions():
         for question in self._extract_parentheses(response.text):
             question_list.append(ast.literal_eval(question))
 
+        # Add question to the database
+        for question, o1, o2, o3, o4, correct_option, category in question_list:
+            insertion_tuple = (movie, question, o1, o2, o3, o4, correct_option, category)
+            '''INSERT INTO DATABASE HERE'''
+
+        # Don't need to return after database support is added
         return question_list
+
+
+    # Manually add question to the database
+    def add_question(self, movie, question, o1, o2, o3, o4, correct_option, category):
+        try:
+            movie_obj = lb_movie.Movie(movie)
+        except:
+            print(f"The film '{movie}' could not be found, the question will not be added")
+            return
+
+        if category is None:
+            category = 0
+
+        insertion_tuple = (movie_obj.title, question, o1, o2, o3, o4, correct_option, category)
+
+        '''INSERT INTO DATABASE HERE'''
+
+
+    # Retrieve questions from database
+    def retrieve_questions(movies, categories):
+        if not categories:
+            categories = [0, 1, 2, 3, 4, 5]
+        
+        for movie in movies:
+            '''RETRIEVE FROM DATABASE WITH RANDOM CATEGORY IF AVAILABLE OR GENERATE AND THEN RETRIEVE'''
 
 
 if __name__ == "__main__":
     from user_movie_list import UserMovieList
     uml = UserMovieList(username="aidenap21")
-    rq = RetrieveQuestions()
+    tq = TrviaQuestions()
     movies = uml.reduce_movies(5)
 
     for movie in movies:
         print(movie)
-        for question in rq.generate_questions(movie):
+        for question in tq.generate_questions(movie):
             print(question)
