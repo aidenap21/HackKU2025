@@ -6,7 +6,7 @@ app = FastAPI()
 # Allow React frontend to connect
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"], # ["https://aidenap21.github.io"]  # React dev server
+    allow_origins=["*"], # ["https://aidenap21.github.io"]  # React dev server
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
