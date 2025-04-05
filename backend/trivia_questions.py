@@ -2,7 +2,7 @@ import os
 import ast
 import time
 import random
-from api_keys import GEMINI_API_KEY, SUPABASE_URL, SUPABASE_KEY
+# from api_keys import GEMINI_API_KEY, SUPABASE_URL, SUPABASE_KEY
 import google.generativeai as gemini
 from letterboxdpy import movie as lb_movie
 from supabase import create_client, Client
@@ -13,7 +13,7 @@ class TriviaQuestions():
         supabase_url: str = os.environ.get("SUPABASE_URL")
         supabase_key: str = os.environ.get("SUPABASE_KEY")
 
-        gemini.configure(api_key=GEMINI_API_KEY)
+        gemini.configure(api_key=gemini_key)
         self._model=gemini.GenerativeModel("gemini-1.5-flash")
 
         self._supabase: Client = create_client(supabase_url, supabase_key)
