@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
 
 app = FastAPI()
 
@@ -12,7 +13,14 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Pydantic model to define the input schema
+class UserInput(BaseModel):
+    name: str
 
 @app.get("/api/hello")
 def read_root():
     return {"message": "Hello from FastAPI!"}
+
+@app.get("api/username")
+def read_username(user_input: UserInput):
+    return {"message": f"The username received is {user_input}"}

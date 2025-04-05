@@ -1,3 +1,4 @@
+import os
 import ast
 import time
 import random
@@ -7,10 +8,15 @@ from letterboxdpy import movie as lb_movie
 from supabase import create_client, Client
 
 class TrviaQuestions():
-    def __init__(self):
+    def __init__(self):        
+        gemini_key  : str = os.environ.get("GEMINI_API_KEY")
+        supabase_url: str = os.environ.get("SUPABASE_URL")
+        supabase_key: str = os.environ.get("SUPABASE_KEY")
+
         gemini.configure(api_key=GEMINI_API_KEY)
         self._model=gemini.GenerativeModel("gemini-1.5-flash")
-        self._supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
+
+        self._supabase: Client = create_client(supabase_url, supabase_key)
 
 
     # Extract the question tuples

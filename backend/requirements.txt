@@ -1,2 +1,8 @@
 fastapi
 uvicorn
+requests
+letterboxdpy
+supabase
+google.generativeai
+bs4
+pydantic
