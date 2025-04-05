@@ -7,7 +7,7 @@ import google.generativeai as gemini
 from letterboxdpy import movie as lb_movie
 from supabase import create_client, Client
 
-class TrviaQuestions():
+class TriviaQuestions():
     def __init__(self):        
         gemini_key  : str = os.environ.get("GEMINI_API_KEY")
         supabase_url: str = os.environ.get("SUPABASE_URL")
@@ -212,7 +212,7 @@ if __name__ == "__main__":
 
     from user_movie_list import UserMovieList
     uml = UserMovieList(username="aidenap21")
-    tq = TrviaQuestions()
+    tq = TriviaQuestions()
     movies = uml.movies # uml.reduce_movies(5)
 
     for movie in movies:

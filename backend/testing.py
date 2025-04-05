@@ -24,7 +24,7 @@ if __name__ == "__main__":
     if len(total.movies) > int(quantity):
         movies = total.reduce_movies(int(quantity))
 
-    trivia = TrviaQuestions()
+    trivia = TriviaQuestions()
     questions = trivia.retrieve_questions(movies, categories=categories)
     print(f"Number of questions: {len(questions)}")
 
