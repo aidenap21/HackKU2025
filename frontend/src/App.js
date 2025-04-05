@@ -3,7 +3,7 @@ import React, { useState } from "react";
 function App() {
   const [username, setUsername] = useState(""); // For storing user input
   const [quantity, setQuantity] = useState(""); // For storing user input
-  const [questions, setQuestions] = useState(""); // For storing API response
+  const [questions, setQuestions] = useState([]); // For storing API response
 
   const handleUsernameInputChange = (e) => {
     setUsername(e.target.value); // Update name with user input
@@ -29,6 +29,7 @@ function App() {
     });
 
     const data = await response.json();
+    console.log("Received data:", data); 
     setQuestions(data.questions); // Set the message returned from FastAPI
   };
 
@@ -62,7 +63,7 @@ function App() {
 
         <div className="mt-4">
           {/* Render each question in a box */}
-          {questions.length > 0 ? (
+          {Array.isArray(questions) && questions.length > 0 ? (
             questions.map(([movie, question, o1, o2, o3, o4, answer, category], index) => (
               <div key={index} className="border p-4 mb-4 rounded shadow">
                 <h3 className="text-xl font-bold text-blue-500">{movie}</h3>

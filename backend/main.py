@@ -38,4 +38,4 @@ def read_username(user_input: UserInput):
         questions_list.append(question)
 
     print("Finished processing, sending to React")
-    return {"questions": f"{questions_list}"}
+    return {"questions": questions_list}
