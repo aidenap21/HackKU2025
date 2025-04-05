@@ -69,10 +69,12 @@ function App() {
                 <h3 className="text-xl font-bold text-blue-500">{movie}</h3>
                 <p className="mt-2">{question}</p>
                 <ul className="mt-2">
-                  <li>{o1}</li>
-                  <li>{o2}</li>
-                  <li>{o3}</li>
-                  <li>{o4}</li>
+                  <ol>
+                    <li>{o1}</li>
+                    <li>{o2}</li>
+                    <li>{o3}</li>
+                    <li>{o4}</li>
+                  </ol>
                 </ul>
                 <p className="mt-2">Correct answer: {answer}</p>
                 <p className="text-gray-500 text-sm">Category: {category}</p>
