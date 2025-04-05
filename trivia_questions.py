@@ -1,14 +1,17 @@
-import re
+import os
 import ast
 import time
-from gemini_key import GEMINI_API_KEY
+import random
+from api_keys import GEMINI_API_KEY, SUPABASE_URL, SUPABASE_KEY
 import google.generativeai as gemini
 from letterboxdpy import movie as lb_movie
+from supabase import create_client, Client
 
 class TrviaQuestions():
     def __init__(self):
         gemini.configure(api_key=GEMINI_API_KEY)
-        self.model=gemini.GenerativeModel("gemini-1.5-flash")
+        self._model=gemini.GenerativeModel("gemini-1.5-flash")
+        self._supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 
     # Extract the question tuples
@@ -49,7 +52,7 @@ class TrviaQuestions():
         # Keep attempting to generate till successful
         while(not_generated):
             try:
-                response = self.model.generate_content(
+                response = self._model.generate_content(
                     f"Generate five multiple choice questions for the movie {movie_title} in the following format, with the categories of 'Plot (1)', 'Cast (2)', 'Crew (3)', 'Cinematography (4)', 'Behind the Scenes (5)':"
                     f"('Question', 'Option 1', 'Option 2', 'Option 3', 'Option 4', 'Correct Option Number', 'Category Number')"
                     f"Do not give any other output"
@@ -73,8 +76,19 @@ class TrviaQuestions():
             question_list.append(ast.literal_eval(question))
 
         # Add question to the database
-        for question, o1, o2, o3, o4, correct_option, category in question_list:
-            insertion_tuple = (movie, question, o1, o2, o3, o4, correct_option, category)
+        for question, o1, o2, o3, o4, answer, category in question_list:
+            response = (
+                self._supabase.table("Trivia Questions")
+                .insert({"movie": movie_title,
+                         "question": question,
+                         "option_1": o1,
+                         "option_2": o2,
+                         "option_3": o3,
+                         "option_4": o4,
+                         "answer"  : int(answer),
+                         "category": int(category)})
+                .execute()
+                )
             '''INSERT INTO DATABASE HERE'''
 
         # Don't need to return after database support is added
@@ -82,7 +96,7 @@ class TrviaQuestions():
 
 
     # Manually add question to the database
-    def add_question(self, movie, question, o1, o2, o3, o4, correct_option, category):
+    def add_question(self, movie, question, o1, o2, o3, o4, answer, category):
         try:
             movie_obj = lb_movie.Movie(movie)
         except:
@@ -92,21 +106,62 @@ class TrviaQuestions():
         if category is None:
             category = 0
 
-        insertion_tuple = (movie_obj.title, question, o1, o2, o3, o4, correct_option, category)
+        insertion_tuple = (movie_obj.title, question, o1, o2, o3, o4, answer, category)
 
         '''INSERT INTO DATABASE HERE'''
 
 
     # Retrieve questions from database
-    def retrieve_questions(movies, categories):
+    def retrieve_questions(self, movies, categories=[]):
         if not categories:
             categories = [0, 1, 2, 3, 4, 5]
         
+        question_list = []
+
         for movie in movies:
-            '''RETRIEVE FROM DATABASE WITH RANDOM CATEGORY IF AVAILABLE OR GENERATE AND THEN RETRIEVE'''
+            category_choice = random.choice(categories)
+
+            # Attempt to read from database
+            response = (
+                self._supabase.table("Trivia Questions")
+                .select("*")
+                .eq("movie", movie)
+                .eq("category", f"{category_choice}")
+                .gte("verified", 0)
+                .execute()
+                )
+            
+            # Generate new questions if necessary
+            if len(response.data) == 0:
+                self.generate_questions(movie)
+
+                response = (
+                    self._supabase.table("Trivia Questions")
+                    .select("*")
+                    .eq("movie", movie)
+                    .eq("category", f"{category_choice}")
+                    .gte("verified", 0)
+                    .execute()
+                    )
+
+            response_list = list(response.data)
+            question = random.choice(response_list)
+            question_list.append((
+                question["movie"],
+                question["question"],
+                question["option_1"],
+                question["option_2"],
+                question["option_3"],
+                question["option_4"],
+                question["answer"],
+                question["category"]
+            ))
+
+        return question_list
 
 
 if __name__ == "__main__":
+
     from user_movie_list import UserMovieList
     uml = UserMovieList(username="aidenap21")
     tq = TrviaQuestions()
@@ -114,5 +169,8 @@ if __name__ == "__main__":
 
     for movie in movies:
         print(movie)
-        for question in tq.generate_questions(movie):
-            print(question)
+
+    for question in tq.retrieve_questions(movies):
+        print(question)
+        # for question in tq.generate_questions(movie):
+        #     print(question)
