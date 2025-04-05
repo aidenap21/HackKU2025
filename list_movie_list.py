@@ -3,7 +3,7 @@ from letterboxdpy import list as lb_list
 
 class ListMovieList(MovieList):
     def __init__(self, list_author, list_name, movies=None):
-        super.__init__()
+        super().__init__()
         # Find Letterboxd list
         try:
             self.list = lb_list.List(list_author, list_name)

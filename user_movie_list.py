@@ -4,7 +4,7 @@ from letterboxdpy import movie as lb_movie
 
 class UserMovieList(MovieList):
     def __init__(self, username=None, movies=None):
-        super.__init__()
+        super().__init__()
         # Find Letterboxd user
         try:
             self.user = lb_user.User(username)

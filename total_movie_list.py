@@ -4,7 +4,7 @@ from movie_list import *
 
 class TotalMovieList(MovieList):
     def __init__(self, user_movie_lists=None, list_movie_list=None):
-        super.__init__()
+        super().__init__()
         # Save all users
         self.users = user_movie_lists
 
