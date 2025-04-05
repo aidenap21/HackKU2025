@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/HackKU2025/static/css/main.cf890fdb.css",
-    "main.js": "/HackKU2025/static/js/main.caf9427e.js",
+    "main.js": "/HackKU2025/static/js/main.f954896a.js",
     "static/js/453.8ab44547.chunk.js": "/HackKU2025/static/js/453.8ab44547.chunk.js",
     "index.html": "/HackKU2025/index.html",
     "main.cf890fdb.css.map": "/HackKU2025/static/css/main.cf890fdb.css.map",
-    "main.caf9427e.js.map": "/HackKU2025/static/js/main.caf9427e.js.map",
+    "main.f954896a.js.map": "/HackKU2025/static/js/main.f954896a.js.map",
     "453.8ab44547.chunk.js.map": "/HackKU2025/static/js/453.8ab44547.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.cf890fdb.css",
-    "static/js/main.caf9427e.js"
+    "static/js/main.f954896a.js"
   ]
 }
