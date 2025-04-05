@@ -1,4 +1,3 @@
-import os
 import ast
 import time
 import random
@@ -208,7 +207,7 @@ if __name__ == "__main__":
     from user_movie_list import UserMovieList
     uml = UserMovieList(username="aidenap21")
     tq = TrviaQuestions()
-    movies = uml.reduce_movies(5)
+    movies = uml.movies # uml.reduce_movies(5)
 
     for movie in movies:
         print(movie)

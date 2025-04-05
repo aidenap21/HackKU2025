@@ -1,9 +1,10 @@
-import random
+from movie_list import*
 from letterboxdpy import user  as lb_user
 from letterboxdpy import movie as lb_movie
 
-class UserMovieList:
+class UserMovieList(MovieList):
     def __init__(self, username=None, movies=None):
+        super.__init__()
         # Find Letterboxd user
         try:
             self.user = lb_user.User(username)
@@ -30,11 +31,6 @@ class UserMovieList:
 
         self.movies = list(movie_set)
         self.movies.sort()
-
-
-    # Choose a given number of movies at random
-    def reduce_movies(self, count):
-        return random.sample(self.movies, count)
 
 
 if __name__ == "__main__":
