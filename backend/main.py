@@ -21,7 +21,7 @@ class UserInput(BaseModel):
 def read_root():
     return {"message": "Hello from FastAPI!"}
 
-@app.get("/api/username")
+@app.post("/api/username")
 def read_username(user_input: UserInput):
     print(user_input)
     return {"message": f"The username received is {user_input.name}"}
