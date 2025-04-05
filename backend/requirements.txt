@@ -6,3 +6,4 @@ supabase
 google.generativeai
 bs4
 pydantic
+lxml

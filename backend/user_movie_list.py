@@ -8,9 +8,9 @@ class UserMovieList(MovieList):
         # Find Letterboxd user
         try:
             self.user = lb_user.User(username)
-        except:
+        except Exception as e:
             self.user = None
-            print(f"No user found for the username '{username}'")
+            print(f"No user found for the username '{username}'\nException: {e}")
 
         # Add manually added movies to movie set
         movie_set = set()
