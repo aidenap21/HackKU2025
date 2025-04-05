@@ -17,7 +17,8 @@ app.add_middleware(
 
 # Pydantic model to define the input schema
 class UserInput(BaseModel):
-    name: str
+    username: str
+    quantity: str
 
 @app.get("/api/hello")
 def read_root():
