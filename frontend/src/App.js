@@ -1,38 +1,9 @@
-// import { useEffect, useState } from "react";
-
-// function App() {
-//   const [message, setMessage] = useState("");
-
-//   const base_URL = "https://hackku2025.onrender.com"; // or "http://localhost:8000" for local dev
-
-//   useEffect(() => {
-//     fetch(`${base_URL}/api/hello`)
-//       .then((res) => res.json())
-//       .then((data) => {
-//         console.log("API response:", data); // for debugging
-//         setMessage(data.message || data); // support both { message: "..." } and plain string
-//       })
-//       .catch((err) => console.error("Fetch error:", err));
-//   }, []);
-
-//   return (
-//     <div className="min-h-screen flex items-center justify-center bg-gray-100">
-//       <div className="bg-white p-8 rounded shadow text-center">
-//         <h1 className="text-2xl font-bold text-blue-600">React + FastAPI</h1>
-//         <p className="mt-4 text-gray-700">{message || "Loading..."}</p>
-//       </div>
-//     </div>
-//   );
-// }
-
-// export default App;
-
 import React, { useState } from "react";
 
 function App() {
   const [username, setUsername] = useState(""); // For storing user input
   const [quantity, setQuantity] = useState(""); // For storing user input
-  const [message, setMessage] = useState(""); // For storing API response
+  const [questions, setQuestions] = useState(""); // For storing API response
 
   const handleUsernameInputChange = (e) => {
     setUsername(e.target.value); // Update name with user input
@@ -58,13 +29,13 @@ function App() {
     });
 
     const data = await response.json();
-    setMessage(data.message); // Set the message returned from FastAPI
+    setQuestions(data.questions); // Set the message returned from FastAPI
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="bg-white p-8 rounded shadow text-center">
-        <h1 className="text-2xl font-bold text-blue-600">React + FastAPI</h1>
+        <h1 className="text-2xl font-bold text-blue-600">cineME film trivia</h1>
 
         <form onSubmit={handleSubmit}>
           <input
@@ -89,7 +60,27 @@ function App() {
           </button>
         </form>
 
-        <p className="mt-4 text-gray-700">{message || "Loading..."}</p>
+        <div className="mt-4">
+          {/* Render each question in a box */}
+          {questions.length > 0 ? (
+            questions.map(([movie, question, o1, o2, o3, o4, answer, category], index) => (
+              <div key={index} className="border p-4 mb-4 rounded shadow">
+                <h3 className="text-xl font-bold text-blue-500">{movie}</h3>
+                <p className="mt-2">{question}</p>
+                <ul className="mt-2">
+                  <li>{o1}</li>
+                  <li>{o2}</li>
+                  <li>{o3}</li>
+                  <li>{o4}</li>
+                </ul>
+                <p className="mt-2">Correct answer: {answer}</p>
+                <p className="text-gray-500 text-sm">Category: {category}</p>
+              </div>
+            ))
+          ) : (
+            <p>Loading questions...</p>
+          )}
+        </div>
       </div>
     </div>
   );

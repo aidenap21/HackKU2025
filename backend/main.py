@@ -33,15 +33,9 @@ def read_username(user_input: UserInput):
     trivia_obj = TriviaQuestions()
     questions = trivia_obj.retrieve_questions(movie_list)
 
-    message = ""
-    for movie, question, o1, o2, o3, o4, answer, category in questions:
-        message += f"Movie: {movie}<br />"
-        message += f"Q: {question}<br />"
-        message += f"1. {o1}<br />"
-        message += f"2. {o2}<br />"
-        message += f"3. {o3}<br />"
-        message += f"4. {o4}<br />"
-        message += f"\n"
+    questions_list = []
+    for question in questions:
+        questions_list.append(question)
 
     print("Finished processing, sending to React")
-    return {"message": f"{message}"}
+    return {"questions": f"{questions_list}"}
