@@ -13,14 +13,15 @@ class UserMovieList:
 
         # Add manually added movies to movie set
         movie_set = set()
-        for movie in set(movies):
-            try:
-                movie_obj = lb_movie.Movie(movie)
-            except:
-                print(f"The film '{movie}' could not be found")
-                continue
-            
-            movie_set.add(movie_obj.title)
+        if movies is not None:
+            for movie in set(movies):
+                try:
+                    movie_obj = lb_movie.Movie(movie)
+                except:
+                    print(f"The film '{movie}' could not be found")
+                    continue
+                
+                movie_set.add(movie_obj.title)
 
         # Iterate through user's watched movies and add to movie set
         if self.user is not None:
@@ -29,6 +30,7 @@ class UserMovieList:
 
         self.movies = list(movie_set)
         self.movies.sort()
+
 
     # Choose a given number of movies at random
     def reduce_movies(self, count):
