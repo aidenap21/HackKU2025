@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
+from typing import Optional
 from user_movie_list import *
 from list_movie_list import *
 from trivia_questions import *
@@ -18,10 +19,10 @@ app.add_middleware(
 
 # Pydantic model to define the input schema
 class UserInput(BaseModel):
-    username    : str
-    list_author : str
-    list_name   : str
-    quantity    : str
+    username    : Optional[str] = None
+    list_author : Optional[str] = None
+    list_name   : Optional[str] = None
+    quantity    : Optional[str] = None
 
 
 @app.post("/api/username")
