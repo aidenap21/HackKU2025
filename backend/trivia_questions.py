@@ -9,12 +9,12 @@ from supabase import create_client, Client
 
 class TriviaQuestions():
     def __init__(self):        
-        gemini_key  : str = os.environ.get("GEMINI_API_KEY")
+        self._gemini_key  : str = os.environ.get("GEMINI_API_KEY")
         supabase_url: str = os.environ.get("SUPABASE_URL")
         supabase_key: str = os.environ.get("SUPABASE_KEY")
 
-        gemini.configure(api_key=gemini_key)
-        self._model=gemini.GenerativeModel("gemini-1.5-flash")
+        # Initialize as empty till the model needs to be loaded
+        self._model = None
 
         self._supabase: Client = create_client(supabase_url, supabase_key)
 
@@ -50,6 +50,11 @@ class TriviaQuestions():
 
     # Generate questions with Gemini
     def generate_questions(self, movie_title):
+        # Check if model has already been loaded
+        if self._model is None:
+            gemini.configure(api_key=self._gemini_key)
+            self._model=gemini.GenerativeModel("gemini-1.5-flash")
+
         # Check if generation has completed
         not_generated = True
         sleep_length = 1

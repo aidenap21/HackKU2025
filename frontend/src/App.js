@@ -51,8 +51,10 @@ function App() {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ username: username }), // Send the name to the backend
-      body: JSON.stringify({ quantity: quantity }), // Send the name to the backend
+      body: JSON.stringify({
+        username: username,  // Send the username to the backend
+        quantity: quantity,  // Send the quantity to the backend
+      }),
     });
 
     const data = await response.json();

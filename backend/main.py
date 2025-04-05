@@ -28,7 +28,7 @@ def read_username(user_input: UserInput):
     print(user_input)
 
     user_obj = UserMovieList(username=user_input.username)
-    movie_list = user_obj.reduce_movies(user_input.quantity)
+    movie_list = user_obj.reduce_movies(int(user_input.quantity))
     trivia_obj = TriviaQuestions()
     questions = trivia_obj.retrieve_questions(movie_list)
 
@@ -41,6 +41,5 @@ def read_username(user_input: UserInput):
         message += f"3. {o3}\n"
         message += f"4. {o4}\n"
         message += f"\n"
-
 
     return {"message": f"{message}"}
