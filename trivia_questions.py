@@ -75,40 +75,54 @@ class TrviaQuestions():
         for question in self._extract_parentheses(response.text):
             question_list.append(ast.literal_eval(question))
 
-        # Add question to the database
+        # Add questions to the database
         for question, o1, o2, o3, o4, answer, category in question_list:
-            response = (
-                self._supabase.table("Trivia Questions")
-                .insert({"movie": movie_title,
-                         "question": question,
-                         "option_1": o1,
-                         "option_2": o2,
-                         "option_3": o3,
-                         "option_4": o4,
-                         "answer"  : int(answer),
-                         "category": int(category)})
-                .execute()
-                )
-            '''INSERT INTO DATABASE HERE'''
-
-        # Don't need to return after database support is added
-        return question_list
+            try:
+                response = (
+                    self._supabase.table("Trivia Questions")
+                    .insert({"movie": movie_title,
+                            "question": question,
+                            "option_1": o1,
+                            "option_2": o2,
+                            "option_3": o3,
+                            "option_4": o4,
+                            "answer"  : int(answer),
+                            "category": int(category)})
+                    .execute()
+                    )
+            except Exception as e:
+                print(f"Error adding question to the database: {e}")
 
 
     # Manually add question to the database
-    def add_question(self, movie, question, o1, o2, o3, o4, answer, category):
+    def add_question(self, movie, question, o1, o2, o3, o4, answer, category=None):
+        # Attempt to find movie on Letterboxd
         try:
             movie_obj = lb_movie.Movie(movie)
         except:
             print(f"The film '{movie}' could not be found, the question will not be added")
             return
 
-        if category is None:
+        # Assigns 'Random' category if invalid category passed
+        if category is None or category < 0 or category > 5:
             category = 0
 
-        insertion_tuple = (movie_obj.title, question, o1, o2, o3, o4, answer, category)
-
-        '''INSERT INTO DATABASE HERE'''
+        try:
+            response = (
+                self._supabase.table("Trivia Questions")
+                .insert({"movie": movie_obj.title,
+                        "question": question,
+                        "option_1": o1,
+                        "option_2": o2,
+                        "option_3": o3,
+                        "option_4": o4,
+                        "answer"  : int(answer),
+                        "category": int(category),
+                        "verified": 1})
+                .execute()
+                )
+        except Exception as e:
+            print(f"Error adding question to the database: {e}")
 
 
     # Retrieve questions from database
