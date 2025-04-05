@@ -35,12 +35,13 @@ def read_username(user_input: UserInput):
 
     message = ""
     for movie, question, o1, o2, o3, o4, answer, category in questions:
-        message += f"Movie: {movie}\n"
-        message += f"Q: {question}\n"
-        message += f"1. {o1}\n"
-        message += f"2. {o2}\n"
-        message += f"3. {o3}\n"
-        message += f"4. {o4}\n"
+        message += f"Movie: {movie}<br />"
+        message += f"Q: {question}<br />"
+        message += f"1. {o1}<br />"
+        message += f"2. {o2}<br />"
+        message += f"3. {o3}<br />"
+        message += f"4. {o4}<br />"
         message += f"\n"
 
+    print("Finished processing, sending to React")
     return {"message": f"{message}"}
