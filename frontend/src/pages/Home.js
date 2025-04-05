@@ -7,7 +7,7 @@ function Home() {
       <Link to="/usernametrivia" className="bg-blue-500 text-white px-6 py-3 rounded shadow mb-4">
         Play Trivia with Letterboxd Username
       </Link>
-      <Link to="/linktrivia" className="bg-green-500 text-white px-6 py-3 rounded shadow">
+      <Link to="/listtrivia" className="bg-green-500 text-white px-6 py-3 rounded shadow">
         Play Trivia with Letterboxd List
       </Link>
     </div>
