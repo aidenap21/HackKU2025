@@ -23,4 +23,5 @@ def read_root():
 
 @app.get("/api/username")
 def read_username(user_input: UserInput):
-    return {"message": f"The username received is {user_input}"}
+    print(user_input)
+    return {"message": f"The username received is {user_input.name}"}
