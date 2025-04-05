@@ -4,7 +4,7 @@ function App() {
   const [message, setMessage] = useState("");
 
   useEffect(() => {
-    fetch("http://localhost:8000/api/hello")
+    fetch("http://localhost:8000/api/hello")  // ("https://hackku2025.onrender.com")
       .then((res) => res.json())
       .then((data) => setMessage(data.message));
   }, []);
