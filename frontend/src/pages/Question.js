@@ -64,6 +64,8 @@ function Question() {
 
     setSelected(answer);
 
+    console.log(`Answer ${answer} selected`)
+
     // Send selected answer to backend
     socket.send(
       JSON.stringify({
