@@ -37,6 +37,7 @@ function Question() {
             state: {
                 name: name,
                 question_number: question_number,
+                total_questions: total_questions,
                 answer: data.answer
                 }
             });
@@ -46,7 +47,8 @@ function Question() {
             state: {
                 name: name,
                 question_number: question_number,
-                correct_answer: data.correct_answer
+                total_questions: total_questions,
+                answer: data.correct_answer
                 }
             });
         }

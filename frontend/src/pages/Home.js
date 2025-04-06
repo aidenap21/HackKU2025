@@ -5,11 +5,11 @@ function Home() {
   
     const handleCreateLobby = () => {
       const new_lobby_code = Math.random().toString(36).substring(2, 8);  // Random lobby code
-      navigate(`hostlobby/${new_lobby_code}`);  // Redirect to the new lobby page
+      navigate(`/hostlobby/${new_lobby_code}`);  // Redirect to the new lobby page
     };
 
     const handleJoinLobby = () => {
-        navigate(`joinlobby`);  // Redirect to the new lobby page
+        navigate(`/joinlobby`);  // Redirect to the new lobby page
     };
 
     return (
