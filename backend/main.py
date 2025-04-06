@@ -72,85 +72,6 @@ async def websocket_endpoint(websocket: WebSocket, lobby_code: str):
             try:
                 data = await websocket.receive_json()
 
-                # Called by host to start game
-                if data["type"] == "start_game":
-                    print("Starting game")
-                    user_objs = []
-                    for username in usernames[lobby_code]:
-                        user_obj = UserMovieList(username=username)
-                        user_objs.append(user_obj)
-
-                    list_obj = ListMovieList(list_author=data['list_author'], list_name=data['list_name'])
-
-                    total_obj = TotalMovieList(user_movie_lists=user_objs, list_movie_list=list_obj)
-                    movie_list = total_obj.reduce_movies(int(data['quantity']))
-
-                    questions[lobby_code] = trivia.retrieve_questions(movie_list)
-
-                    # Send first question to all clients
-                    for conn in lobbies[lobby_code]:
-
-                        await conn.send_json({
-                            "type": "question",
-                            "movie": questions[lobby_code][0][0],
-                            "question": questions[lobby_code][0][1],
-                            "option_1": questions[lobby_code][0][2],
-                            "option_2": questions[lobby_code][0][3],
-                            "option_3": questions[lobby_code][0][4],
-                            "option_4": questions[lobby_code][0][5],
-                            "total_questions": len(questions[lobby_code])
-                        })
-
-                # Client requests next question
-                elif data["type"] == "question":
-                    if int(data['current_question']) >= len(questions[lobby_code]):
-                        print("Invalid question number")
-                        await websocket.send_json({
-                            "type": "error",
-                            "response": "Current question exceed number of questions"
-                        })
-
-                    else:
-                        print("Sending next question")
-                        await websocket.send_json({
-                            "type": "question",
-                            "movie": questions[lobby_code][int(data["current_question"])][0],
-                            "question": questions[lobby_code][int(data["current_question"])][1],
-                            "option_1": questions[lobby_code][int(data["current_question"])][2],
-                            "option_2": questions[lobby_code][int(data["current_question"])][3],
-                            "option_3": questions[lobby_code][int(data["current_question"])][4],
-                            "option_4": questions[lobby_code][int(data["current_question"])][5],
-                            "total_questions": len(questions[lobby_code])
-                        })
-
-                # Client requests answer check
-                elif data["type"] == "answer":
-                    if int(data["answer"]) == questions[lobby_code][int(data["current_question"])][6]:
-                        print("Correct answer")
-                        scores[lobby_code][names[lobby_code].index[data['name']]] += 1
-
-                        await websocket.send_json({
-                            "type": "answer",
-                            "outcome": "correct",
-                            "correct_answer": questions[lobby_code][int(data["current_question"])][1 + questions[lobby_code][int(data["current_question"])][6]]
-                        })
-                    else:
-                        print("Incorrect answer")
-                        await websocket.send_json({
-                            "type": "answer",
-                            "outcome": "incorrect",
-                            "correct_answer": questions[lobby_code][int(data["current_question"])][1 + questions[lobby_code][int(data["current_question"])][6]]
-                        })
-
-                # Client sends verification
-                elif data["type"] == "verify":
-                    print("Updating verification")
-                    trivia.verify_question(
-                        movie=questions[lobby_code][int(data["current_question"])][0],
-                        question=questions[lobby_code][int(data["current_question"])][1],
-                        verify=int(data["verify"])
-                    )
-
             except WebSocketDisconnect:
                 print(f"Client disconnected from {lobby_code}")
                 break
@@ -158,6 +79,85 @@ async def websocket_endpoint(websocket: WebSocket, lobby_code: str):
             except Exception as e:
                 print(f"Error in message loop for {lobby_code}: {e}")
                 break
+
+            # Called by host to start game
+            if data["type"] == "start_game":
+                print("Starting game")
+                user_objs = []
+                for username in usernames[lobby_code]:
+                    user_obj = UserMovieList(username=username)
+                    user_objs.append(user_obj)
+
+                list_obj = ListMovieList(list_author=data['list_author'], list_name=data['list_name'])
+
+                total_obj = TotalMovieList(user_movie_lists=user_objs, list_movie_list=list_obj)
+                movie_list = total_obj.reduce_movies(int(data['quantity']))
+
+                questions[lobby_code] = trivia.retrieve_questions(movie_list)
+
+                # Send first question to all clients
+                for conn in lobbies[lobby_code]:
+
+                    await conn.send_json({
+                        "type": "question",
+                        "movie": questions[lobby_code][0][0],
+                        "question": questions[lobby_code][0][1],
+                        "option_1": questions[lobby_code][0][2],
+                        "option_2": questions[lobby_code][0][3],
+                        "option_3": questions[lobby_code][0][4],
+                        "option_4": questions[lobby_code][0][5],
+                        "total_questions": len(questions[lobby_code])
+                    })
+
+            # Client requests next question
+            elif data["type"] == "question":
+                if int(data['current_question']) >= len(questions[lobby_code]):
+                    print("Invalid question number")
+                    await websocket.send_json({
+                        "type": "error",
+                        "response": "Current question exceed number of questions"
+                    })
+
+                else:
+                    print("Sending next question")
+                    await websocket.send_json({
+                        "type": "question",
+                        "movie": questions[lobby_code][int(data["current_question"])][0],
+                        "question": questions[lobby_code][int(data["current_question"])][1],
+                        "option_1": questions[lobby_code][int(data["current_question"])][2],
+                        "option_2": questions[lobby_code][int(data["current_question"])][3],
+                        "option_3": questions[lobby_code][int(data["current_question"])][4],
+                        "option_4": questions[lobby_code][int(data["current_question"])][5],
+                        "total_questions": len(questions[lobby_code])
+                    })
+
+            # Client requests answer check
+            elif data["type"] == "answer":
+                if int(data["answer"]) == questions[lobby_code][int(data["current_question"])][6]:
+                    print("Correct answer")
+                    scores[lobby_code][names[lobby_code].index[data['name']]] += 1
+
+                    await websocket.send_json({
+                        "type": "answer",
+                        "outcome": "correct",
+                        "correct_answer": questions[lobby_code][int(data["current_question"])][1 + questions[lobby_code][int(data["current_question"])][6]]
+                    })
+                else:
+                    print("Incorrect answer")
+                    await websocket.send_json({
+                        "type": "answer",
+                        "outcome": "incorrect",
+                        "correct_answer": questions[lobby_code][int(data["current_question"])][1 + questions[lobby_code][int(data["current_question"])][6]]
+                    })
+
+            # Client sends verification
+            elif data["type"] == "verify":
+                print("Updating verification")
+                trivia.verify_question(
+                    movie=questions[lobby_code][int(data["current_question"])][0],
+                    question=questions[lobby_code][int(data["current_question"])][1],
+                    verify=int(data["verify"])
+                )
 
     except WebSocketDisconnect:
         lobbies[lobby_code].remove(websocket)

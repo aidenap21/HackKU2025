@@ -7,3 +7,4 @@ google.generativeai
 bs4
 pydantic
 lxml
+python-dotenv

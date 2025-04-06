@@ -2,10 +2,12 @@ import os
 import ast
 import time
 import random
-# from api_keys import GEMINI_API_KEY, SUPABASE_URL, SUPABASE_KEY
+from dotenv import load_dotenv
 import google.generativeai as gemini
 from letterboxdpy import movie as lb_movie
 from supabase import create_client, Client
+
+load_dotenv()
 
 class TriviaQuestions():
     def __init__(self):        
