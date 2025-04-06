@@ -68,6 +68,7 @@ function HostLobby() {
 
   const handleStartGame = (e) => {
     e.preventDefault();
+    console.log("Game starting...")
     if (socket) {
       socket.send(JSON.stringify({
         type: "start_game", // Indicating that the host wants to start the game

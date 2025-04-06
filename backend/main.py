@@ -125,9 +125,12 @@ async def websocket_endpoint(websocket: WebSocket, lobby_code: str):
             elif data["type"] == "answer":
                 if int(data["answer"]) == questions[lobby_code][int(data["current_question"])][6]:
                     print("Correct answer")
+                    scores[lobby_code][names[lobby_code].index[data['name']]] += 1
+
                     await websocket.send_json({
                         "type": "answer",
-                        "outcome": "correct"
+                        "outcome": "correct",
+                        "correct_answer": questions[lobby_code][int(data["current_question"])][1 + questions[lobby_code][int(data["current_question"])][6]]
                     })
                 else:
                     print("Incorrect answer")
