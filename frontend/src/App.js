@@ -23,7 +23,7 @@ function App() {
       <Route path="/hostlobby/:lobby_code" element={<HostLobby />} />
       <Route path="/joinlobby" element={<JoinLobby />} />
       <Route path="/waitinglobby/:lobby_code" element={<WaitingLobby />} />
-      <Route path="/question/:lobby_code/:question_number" element={<Question />} />
+      <Route path="/question/:lobby_code" element={<Question />} />
       <Route path="/correct/:lobby_code" element={<Correct />} />
       <Route path="/incorrect/:lobby_code" element={<Incorrect />} />
       <Route path="/scoreboard/:lobby_code" element={<Scoreboard />} />

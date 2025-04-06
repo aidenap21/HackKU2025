@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
+
 
 function JoinLobby() {
   const navigate                     = useNavigate();
@@ -22,7 +23,7 @@ function JoinLobby() {
   const handleSubmit = async (e) => {
     //e.preventDefault();
 
-    const response = await fetch("https://hackku2025.onrender.com/api/joinlobby", {
+    const response = await fetch("https://hackku2025.onrender.com/api/join_lobby", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

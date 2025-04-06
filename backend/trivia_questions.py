@@ -201,7 +201,8 @@ class TriviaQuestions():
         # Decrease value
         if verification == 0:
             updated_verified -= 1
-        else:
+        # Increase value
+        elif verification == 1:
             updated_verified += 1
 
         response = (

@@ -4,6 +4,7 @@ from pydantic import BaseModel
 from typing import List, Optional
 from user_movie_list import *
 from list_movie_list import *
+from total_movie_list import *
 from trivia_questions import *
 from typing import List
 import random
@@ -12,7 +13,11 @@ import json
 
 app = FastAPI()
 
-lobbies = {}
+lobbies: dict[str, List[WebSocket]] = {}
+questions: dict[str, List[tuple]] = {}
+names: dict[str, List[str]] = {}
+usernames: dict[str, List[str]] = {}
+scores: dict [str, List[int]] = {}
 
 # Allow React frontend to connect
 app.add_middleware(
@@ -49,39 +54,120 @@ async def join_lobby(lobby_code: str, websocket: WebSocket):
 
 # WebSocket connection handler
 @app.websocket("/ws/{lobby_code}")
-async def websocket_endpoint(websocket: WebSocket, lobby_code: str):
+async def websocket_endpoint(websocket: WebSocket, lobby_code: str, user_input: UserInput):
     await websocket.accept()
+    data = await websocket.receive_json()
 
     if lobby_code not in lobbies:
         lobbies[lobby_code] = []
+        names[lobby_code] = []
+        scores[lobby_code] = []
 
-    lobbies[lobby_code].append(websocket)
+    if websocket not in lobbies[lobby_code]:
+        lobbies[lobby_code].append(websocket)
+        names[lobby_code].append(data['name'])
+        usernames[lobby_code].append(data['username'])
+        scores[lobby_code].append(0)
+
+    await broadcast_player_count(lobby_code)
     
-    try:
-        # Send a question to the connected clients
-        question = random.choice(questions)  # Pick a random question
-        message = json.dumps({"question": question})
-        
-        for client in lobbies[lobby_code]:
-            await client.send_text(message)
+    trivia = TriviaQuestions()
 
-        # Handle incoming messages (answers or usernames)
+    try:
         while True:
-            data = await websocket.receive_text()
-            data = json.loads(data)
-            if data['type'] == "join":
-                username = data['username']
-                print(f"{username} has joined the lobby.")
-            elif data['type'] == "answer":
-                answer = data['answer']
-                print(f"Answer received: {answer}")
-                # Here, you can check if the answer is correct and update the score if needed
+            data = await websocket.receive_json()
+
+            # Called by host to start game
+            if data["type"] == "start_game":
+                print("Starting game")
+                user_objs = []
+                for username in usernames[lobby_code]:
+                    user_obj = UserMovieList(username=username)
+                    user_objs.append(user_obj)
+
+                list_obj = ListMovieList(list_author=data['list_author'], list_name=data['list_name'])
+
+                total_obj = TotalMovieList(user_movie_lists=user_objs, list_movie_list=list_obj)
+                movie_list = total_obj.reduce_movies(data['quantity'])
+
+                questions[lobby_code] = trivia.retrieve_questions(movies)
+
+                # Send first question to all clients
+                for conn in lobbies[lobby_code]:
+                    await conn.send_json({
+                        "type": "question",
+                        "movie": questions[lobby_code][0][0],
+                        "question": questions[lobby_code][0][1],
+                        "option_1": questions[lobby_code][0][2],
+                        "option_2": questions[lobby_code][0][3],
+                        "option_3": questions[lobby_code][0][4],
+                        "option_4": questions[lobby_code][0][5],
+                        "total_questions": len(questions[lobby_code])
+                    })
+
+            # Client requests next question
+            elif data["type"] == "question":
+                if int(data['current_question']) >= len(questions[lobby_code]):
+                    print("Invalid question number")
+                    await websocket.send_json({
+                        "type": "error",
+                        "response": "Current question exceed number of questions"
+                    })
+
+                else:
+                    print("Sending next question")
+                    await websocket.send_json({
+                        "type": "question",
+                        "movie": questions[lobby_code][int(data["current_question"])][0],
+                        "question": questions[lobby_code][int(data["current_question"])][1],
+                        "option_1": questions[lobby_code][int(data["current_question"])][2],
+                        "option_2": questions[lobby_code][int(data["current_question"])][3],
+                        "option_3": questions[lobby_code][int(data["current_question"])][4],
+                        "option_4": questions[lobby_code][int(data["current_question"])][5],
+                        "total_questions": len(questions[lobby_code])
+                    })
+
+            # Client requests answer check
+            elif data["type"] == "answer":
+                if data["answer"] == questions[lobby_code][int(data["current_question"])][6]:
+                    print("Correct answer")
+                    await websocket.send_json({
+                        "type": "answer",
+                        "outcome": "correct"
+                    })
+                else:
+                    print("Incorrect answer")
+                    await websocket.send_json({
+                        "type": "answer",
+                        "outcome": "incorrect",
+                        "correct_answer": questions[lobby_code][int(data["current_question"])][1 + questions[lobby_code][int(data["current_question"])][6]]
+                    })
+
+            # Client sends verification
+            elif data["type"] == "verify":
+                print("Updating verification")
+                trivia.verify_question(
+                    movie=questions[lobby_code][int(data["current_question"])][0],
+                    question=questions[lobby_code][int(data["current_question"])][1],
+                    verify=int(data["verify"])
+                )
 
     except WebSocketDisconnect:
-        print(f"A client disconnected from lobby {lobby_code}")
         lobbies[lobby_code].remove(websocket)
+        await broadcast_player_count(lobby_code)
+
+        # Cleanup if lobby is empty
         if len(lobbies[lobby_code]) == 0:
             del lobbies[lobby_code]
+            del questions[lobby_code]
+            del names[lobby_code]
+            del username[lobby_code]
+            del scores[lobby_code]
+
+async def broadcast_player_count(lobby_code: str):
+    player_count = len(lobbies[lobby_code])
+    for conn in lobbies[lobby_code]:
+        await conn.send_json({"type": "player_count", "count": player_count})
 
 
 @app.post("/api/username")
