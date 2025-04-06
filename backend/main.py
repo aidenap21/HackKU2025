@@ -82,7 +82,7 @@ async def websocket_endpoint(websocket: WebSocket, lobby_code: str):
                 list_obj = ListMovieList(list_author=data['list_author'], list_name=data['list_name'])
 
                 total_obj = TotalMovieList(user_movie_lists=user_objs, list_movie_list=list_obj)
-                movie_list = total_obj.reduce_movies(data['quantity'])
+                movie_list = total_obj.reduce_movies(int(data['quantity']))
 
                 questions[lobby_code] = trivia.retrieve_questions(movies)
 
@@ -123,7 +123,7 @@ async def websocket_endpoint(websocket: WebSocket, lobby_code: str):
 
             # Client requests answer check
             elif data["type"] == "answer":
-                if data["answer"] == questions[lobby_code][int(data["current_question"])][6]:
+                if int(data["answer"]) == questions[lobby_code][int(data["current_question"])][6]:
                     print("Correct answer")
                     await websocket.send_json({
                         "type": "answer",
