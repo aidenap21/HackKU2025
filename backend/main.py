@@ -36,14 +36,7 @@ class UserInput(BaseModel):
     quantity    : Optional[str] = None
 
 
-@app.post("/create_lobby")
-async def create_lobby():
-    lobby_code = str(random.randint(1000, 9999))  # generate a 4-digit code
-    lobbies[lobby_code] = {"users": [], "questions": []}
-    return {"lobby_code": lobby_code}
-
-
-@app.post("/join_lobby")
+@app.post("/api/join_lobby")
 async def join_lobby(lobby_code: str, websocket: WebSocket):
     if lobby_code not in lobbies:
         return {"error": "Lobby not found"}
@@ -54,7 +47,7 @@ async def join_lobby(lobby_code: str, websocket: WebSocket):
 
 # WebSocket connection handler
 @app.websocket("/ws/{lobby_code}")
-async def websocket_endpoint(websocket: WebSocket, lobby_code: str, user_input: UserInput):
+async def websocket_endpoint(websocket: WebSocket, lobby_code: str):
     await websocket.accept()
     data = await websocket.receive_json()
 

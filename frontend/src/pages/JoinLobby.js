@@ -20,19 +20,19 @@ function JoinLobby() {
     setLobbyCode(e.target.value);
   };
 
-  const handleSubmit = async (e) => {
+  const handleJoinGame = async (e) => {
     //e.preventDefault();
 
-    const response = await fetch("https://hackku2025.onrender.com/api/join_lobby", {
-      method: "POST",
-      headers: {
+    const response = await fetch(`https://hackku2025.onrender.com/api/join_lobby`, {
+        method: "POST",
+        headers: {
         "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
+        },
+        body: JSON.stringify({
         name        : name,
         username    : username,
         lobby_code  : lobby_code,
-      }),
+        }),
     });
 
     const data = await response.json();
@@ -44,7 +44,7 @@ function JoinLobby() {
     <div className="flex flex-col items-center justify-center h-screen bg-gray-100">
         <h1 className="text-3xl font-bold mb-6">Join Lobby</h1>
 
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleJoinGame}>
             <p>Enter your name</p>
             <input
             type="text"
@@ -77,7 +77,7 @@ function JoinLobby() {
             type="submit"
             className="bg-blue-600 text-white p-2 rounded w-full"
             >
-            Submit
+            Join Game
             </button>
         </form>
     </div>

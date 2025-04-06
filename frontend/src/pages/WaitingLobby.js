@@ -1,20 +1,21 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 
 function JoinLobby() {
   const navigate = useNavigate();
+  const {lobby_code} = useParams();
   const location = useLocation();
   const { name } = location.state || {};
 
-  const [playerCount, setPlayerCount] = useState(1); // Include host by default
+  const [player_count, setPlayerCount] = useState(1); // Include host by default
 
   useEffect(() => {
-    const socket = new WebSocket(`https://hackku2025.onrender.com/api/ws/${lobby_code}`);
+    const socket = new WebSocket(`wss://hackku2025.onrender.com/ws/${lobby_code}`);
 
     socket.onmessage = (event) => {
-      const message = JSON.parse(event.data);
-      if (message.type === "player_count") {
-        setPlayerCount(message.count);
+      const data = JSON.parse(event.data);
+      if (data.type === "player_count") {
+        setPlayerCount(data.count);
       }
       if (data.type === "start_game") {
         navigate(`question/${lobby_code}`, {
