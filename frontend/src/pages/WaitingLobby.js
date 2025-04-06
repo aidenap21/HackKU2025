@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 
-function JoinLobby() {
+function WaitingLobby() {
   const navigate = useNavigate();
   const {lobby_code} = useParams();
   const location = useLocation();
@@ -47,4 +47,4 @@ function JoinLobby() {
   );
 }
 
-export default JoinLobby;
+export default WaitingLobby;

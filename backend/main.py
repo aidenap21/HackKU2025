@@ -54,6 +54,7 @@ async def websocket_endpoint(websocket: WebSocket, lobby_code: str):
     if lobby_code not in lobbies:
         lobbies[lobby_code] = []
         names[lobby_code] = []
+        usernames[lobby_code] = []
         scores[lobby_code] = []
 
     if websocket not in lobbies[lobby_code]:
