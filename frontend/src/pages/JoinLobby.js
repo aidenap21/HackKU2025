@@ -21,7 +21,7 @@ function JoinLobby() {
   };
 
   const handleJoinGame = async (e) => {
-    //e.preventDefault();
+    e.preventDefault();
 
     const response = await fetch(`https://hackku2025.onrender.com/api/join_lobby`, {
         method: "POST",
@@ -37,7 +37,10 @@ function JoinLobby() {
 
     const data = await response.json();
     console.log("Received data:", data);
-    navigate(`waitinglobby/${lobby_code}`);
+    navigate(`waitinglobby/${lobby_code}`, {
+        state: {
+            name: name
+        }});
   };
 
   return (

@@ -84,7 +84,7 @@ async def websocket_endpoint(websocket: WebSocket, lobby_code: str):
                 total_obj = TotalMovieList(user_movie_lists=user_objs, list_movie_list=list_obj)
                 movie_list = total_obj.reduce_movies(int(data['quantity']))
 
-                questions[lobby_code] = trivia.retrieve_questions(movies)
+                questions[lobby_code] = trivia.retrieve_questions(movie_list)
 
                 # Send first question to all clients
                 for conn in lobbies[lobby_code]:
