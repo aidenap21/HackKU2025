@@ -155,7 +155,7 @@ async def websocket_endpoint(websocket: WebSocket, lobby_code: str):
             del lobbies[lobby_code]
             del questions[lobby_code]
             del names[lobby_code]
-            del username[lobby_code]
+            del usernames[lobby_code]
             del scores[lobby_code]
 
 async def broadcast_player_count(lobby_code: str):

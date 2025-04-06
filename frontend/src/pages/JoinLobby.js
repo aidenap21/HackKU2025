@@ -37,7 +37,7 @@ function JoinLobby() {
 
     const data = await response.json();
     console.log("Received data:", data);
-    navigate(`waitinglobby/${lobby_code}`, {
+    navigate(`/waitinglobby/${lobby_code}`, {
         state: {
             name: name
         }});

@@ -18,7 +18,7 @@ function WaitingLobby() {
         setPlayerCount(data.count);
       }
       if (data.type === "start_game") {
-        navigate(`question/${lobby_code}`, {
+        navigate(`/question/${lobby_code}`, {
             state: {
                 name: name,
                 question_number: 0,

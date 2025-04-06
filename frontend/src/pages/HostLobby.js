@@ -23,7 +23,7 @@ function HostLobby() {
 
       // Handle the first question message when host starts the game
       if (data.type === "question") {
-        navigate(`question/${lobby_code}`, {
+        navigate(`/question/${lobby_code}`, {
           state: {
             name: name,
             question_number: 0,
