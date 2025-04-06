@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 
 function HostLobby() {
   const navigate                     = useNavigate();
-  const {lobby_code}                  = useParams();
+  const {lobby_code}                 = useParams();
   const [name, setName]              = useState("");
   const [username, setUsername]      = useState("");
   const [list_author, setListAuthor] = useState("");
@@ -48,9 +48,9 @@ function HostLobby() {
       }),
     });
 
-    // const data = await response.json();
-    // console.log("Received data:", data);
-    // setQuestions(data.questions);
+    const data = await response.json();
+    console.log("Received data:", data);
+    navigate(`question/${lobby_code}/${1}`);
   };
 
   return (
