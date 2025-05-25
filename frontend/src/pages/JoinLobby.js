@@ -23,7 +23,7 @@ function JoinLobby() {
   const handleJoinGame = async (e) => {
     e.preventDefault();
 
-    const response = await fetch(`https://hackku2025.onrender.com/api/join_lobby`, {
+    const response = await fetch(`https://${process.env.REACT_APP_BACKEND_URL_LOCAL}/api/join_lobby`, {
         method: "POST",
         headers: {
         "Content-Type": "application/json",

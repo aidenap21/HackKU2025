@@ -25,7 +25,7 @@ function Question() {
   const [player_count, setPlayerCount] = useState(1); // Include host by default
 
   useEffect(() => {
-    const socket = new WebSocket(`wss://hackku2025.onrender.com/ws/${lobby_code}`);
+    const socket = new WebSocket(`wss://${process.env.REACT_APP_BACKEND_URL_LOCAL}/ws/${lobby_code}`);
 
     socket.onmessage = (event) => {
       const data = JSON.parse(event.data);

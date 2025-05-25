@@ -17,7 +17,7 @@ function UsernameTrivia() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const response = await fetch("https://hackku2025.onrender.com/api/username", {
+    const response = await fetch(`https://${process.env.REACT_APP_BACKEND_URL_LOCAL}/api/username`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

@@ -34,7 +34,7 @@ class UserMovieList(MovieList):
 
 
 if __name__ == "__main__":
-    extra_movies = ["Midsommar", "Black Swan", "Shutter Island", "sdfsfgda", "Django Unchained"]
+    extra_movies = ["Midsommar", "Black Swan", "Shutter Island", "sdfsfgda"]
     uml = UserMovieList(username="aidenap21", movies=extra_movies)
     reduced = uml.reduce_movies(10)
     for i in reduced:

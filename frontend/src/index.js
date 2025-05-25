@@ -6,9 +6,11 @@ import "./index.css"; // optional, if you have styles
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
+const basename = process.env.REACT_APP_BASENAME_LOCAL || "";
+
 root.render(
   <React.StrictMode>
-    <BrowserRouter basename="/HackKU2025">
+    <BrowserRouter basename={basename}>
       <App />
     </BrowserRouter>
   </React.StrictMode>

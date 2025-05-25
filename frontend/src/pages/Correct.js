@@ -17,7 +17,7 @@ function Correct() {
   const [socket, setSocket] = useState(null); // State for WebSocket connection
 
   useEffect(() => {
-    const newSocket = new WebSocket(`wss://hackku2025.onrender.com/ws/${lobby_code}`);
+    const newSocket = new WebSocket(`wss://${process.env.REACT_APP_BACKEND_URL_LOCAL}/ws/${lobby_code}`);
 
     newSocket.onmessage = (event) => {
       const data = JSON.parse(event.data);
